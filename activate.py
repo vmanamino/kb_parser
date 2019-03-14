@@ -76,9 +76,10 @@ print(kb_rows[0])
 
 # match loop
 count = 0
-for i in holdings_issn:
+for cnt, i in enumerate(holdings_issn):
     if i in knowledgebase_issn:
         row_number = knowledgebase_issn.index(i)
+        print('number :'+str(cnt)+" "+str(row_number))
         # print(kb_rows[row_number])
 
 
