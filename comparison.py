@@ -14,7 +14,10 @@ import sys
 kb = './comparison/kb'
 subscription = './comparison/subscription'
 
-kb_issns = []
+
+#  matchpoint is title, since many titles do not have issn
+kb_matchpoint = []
+# kb_issns = [] access via element 9
 kb_each_row = []
 for f in listdir(kb):
     my_file = join(kb, f)
@@ -24,10 +27,12 @@ for f in listdir(kb):
             if cnt == 0:
                 kb_headers = line
             if cnt >= 1:
-                kb_issns.append(line[9])
+                kb_matchpoint.append(line[0].upper())
                 kb_each_row.append(line)
 
-sub_issns = []
+
+sub_matchpoint = [] 
+# sub_issns = []
 sub_each_row = []
 for f in listdir(subscription):
     my_file = join(subscription, f)
@@ -38,28 +43,31 @@ for f in listdir(subscription):
             if cnt == 0:
                 sub_headers = line
             if cnt >= 1:
-                sub_issns.append(line[2])
+                sub_matchpoint.append(line[0].upper())
                 sub_each_row.append(line)
 
+print("kb matchpoints")
+print(len(kb_matchpoint))
+print("sub matchpoints")
+print(len(sub_matchpoint))
 
-# match
 
-kb_not_sub = open('kb_not_sub.txt', 'w')
-# matches.write('%s\t' % ("header"))
+# headers for files
+kb_not_sub = open('./comparison/kb_not_sub.txt', 'w')
 for cnt, header in enumerate(kb_headers):
     if (cnt + 1) < len(kb_headers):
         kb_not_sub.write('%s\t' % (header))
     else:
         kb_not_sub.write('%s\n' % (header))
 
-sub_not_kb = open('sub_not_kb.txt', 'w')
+sub_not_kb = open('./comparison/sub_not_kb.txt', 'w')
 for cnt, header in enumerate(sub_headers):
     if (cnt + 1) < len(sub_headers):
         sub_not_kb.write('%s\t' % (header))
     else:
         sub_not_kb.write('%s\n' % (header))
 
-sub_in_kb = open('sub_in_kb.txt', 'w')
+sub_in_kb = open('./comparison/sub_in_kb.txt', 'w')
 for cnt, header in enumerate(sub_headers):
     if (cnt + 1) < len(sub_headers):
         sub_in_kb.write('%s\t' % (header))
@@ -67,9 +75,11 @@ for cnt, header in enumerate(sub_headers):
         sub_in_kb.write('%s\n' % (header))
 
 
+# three sets we are interested in
 
-for cnt, sub in enumerate(sub_issns):
-    if sub not in kb_issns:
+
+for cnt, sub in enumerate(sub_matchpoint):
+    if sub not in kb_matchpoint:
         sub_row = list(sub_each_row[cnt])
         for cnt, data in enumerate(sub_row):
             if (cnt + 1) < len(sub_row):
@@ -77,7 +87,7 @@ for cnt, sub in enumerate(sub_issns):
             else:
                 sub_not_kb.write('%s\n' % (data))
 
-    if sub in kb_issns:
+    if sub in kb_matchpoint:
         sub_row = list(sub_each_row[cnt])
         for cnt, data in enumerate(sub_row):
             if (cnt + 1) < len(sub_row):
@@ -85,16 +95,38 @@ for cnt, sub in enumerate(sub_issns):
             else:
                 sub_in_kb.write('%s\n' % (data))
 
-print(len(kb_issns))
-for cnt, kb in enumerate(kb_issns):
-    print(cnt)
-    if kb not in sub_issns:
+count = 0
+for cnt, kb in enumerate(kb_matchpoint):
+    if kb not in sub_matchpoint:
+        count += 1
         kb_row = list(kb_each_row[cnt])
         for cnt, data in enumerate(kb_row):
             if (cnt + 1) < len(kb_row):
-                kb_not_sub.write('%s\t' % (data.encode("utf8")))
+                kb_not_sub.write('%s\t' % (data.encode('utf8')))
             else:
-                kb_not_sub.write('%s\n' % (data.encode("utf8")))
+                kb_not_sub.write('%s\n' % (data.encode('utf8')))
+
+print(count)
+
+
+# print(len(kb_issns))
+# print(len(sub_issns))
+# print(sub_issns)
+# print(kb_issns)
+# count = 0
+# kb_set = set(kb_issns).difference(sub_issns)
+# print(len(list(kb_set)))
+# for cnt, kb in enumerate(kb_issns):
+#     # print(cnt)
+#     if kb not in sub_issns:
+#         count += 1
+#         # print(count)
+#         kb_row = list(kb_each_row[cnt])
+#         for cnt, data in enumerate(kb_row):
+#             if (cnt + 1) < len(kb_row):
+#                 kb_not_sub.write('%s\t' % (data.encode("utf8")))
+#             else:
+#                 kb_not_sub.write('%s\n' % (data.encode("utf8")))
 
 
     
