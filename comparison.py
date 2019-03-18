@@ -27,6 +27,7 @@ for f in listdir(kb):
             if cnt == 0:
                 kb_headers = line
             if cnt >= 1:
+                print(line[0].upper())
                 kb_matchpoint.append(line[0].upper())
                 kb_each_row.append(line)
 
@@ -60,6 +61,13 @@ for cnt, header in enumerate(kb_headers):
     else:
         kb_not_sub.write('%s\n' % (header))
 
+kb_in_sub = open('./comparison/kb_in_sub.txt', 'w')
+for cnt, header in enumerate(kb_headers):
+    if (cnt + 1) < len(kb_headers):
+        kb_in_sub.write('%s\t' % (header))
+    else:
+        kb_in_sub.write('%s\n' % (header))
+
 sub_not_kb = open('./comparison/sub_not_kb.txt', 'w')
 for cnt, header in enumerate(sub_headers):
     if (cnt + 1) < len(sub_headers):
@@ -75,7 +83,7 @@ for cnt, header in enumerate(sub_headers):
         sub_in_kb.write('%s\n' % (header))
 
 
-# three sets we are interested in
+# four sets we are interested in
 
 
 for cnt, sub in enumerate(sub_matchpoint):
@@ -97,16 +105,33 @@ for cnt, sub in enumerate(sub_matchpoint):
 
 count = 0
 for cnt, kb in enumerate(kb_matchpoint):
+    kb_row = list(kb_each_row[cnt])
     if kb not in sub_matchpoint:
-        count += 1
-        kb_row = list(kb_each_row[cnt])
+        # count += 1        
         for cnt, data in enumerate(kb_row):
             if (cnt + 1) < len(kb_row):
                 kb_not_sub.write('%s\t' % (data.encode('utf8')))
             else:
                 kb_not_sub.write('%s\n' % (data.encode('utf8')))
+    else:
+        for cnt, data in enumerate(kb_row):
+            if (cnt + 1) < len(kb_row):
+                kb_in_sub.write('%s\t' % (data.encode('utf8')))
+            else:
+                kb_in_sub.write('%s\n' % (data.encode('utf8')))
 
-print(count)
+
+
+    # if kb in sub_matchpoint:
+    #     count += 1
+    #     kb_row = list(kb_each_row[cnt])
+    #     for cnt, data in enumerate(kb_row):
+    #         if (cnt + 1) < len(kb_row):
+    #             kb_in_sub.write('%s\t' % (data.encode('utf8')))
+    #         else:
+    #             kb_in_sub.write('%s\n' % (data.encode('utf8')))
+
+
 
 
 # print(len(kb_issns))
@@ -130,7 +155,7 @@ print(count)
 
 
     
-sub_not_kb.close()
+
 
 
 
